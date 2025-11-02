@@ -20,15 +20,16 @@ app.set('trust proxy', true);
 app.use(cors({ origin: env.CORS_ORIGIN, credentials: true }));
 app.use(helmet());
 app.use(rateLimiter);
+app.use(express.json());
 
 // Request logging
 app.use(requestLogger);
 
-// Routes
-app.use('/health-check', healthCheckRouter);
+// API Routes
+app.use('/api/health-check', healthCheckRouter);
 
 // Swagger UI
-app.use(openAPIRouter);
+app.use('/docs', openAPIRouter);
 
 // Error handlers
 app.use(addErrorToRequestLog);
