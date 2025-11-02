@@ -19,10 +19,12 @@ export class ServiceResponse<T = null> {
   }
 }
 
-export const ServiceResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T) =>
-  z.object({
-    success: z.boolean(),
+export const ServiceResponseSchema = <T extends z.ZodTypeAny>(dataSchema: T, statusCode: number) => {
+  const isSuccess = statusCode >= 200 && statusCode < 300;
+  return z.object({
+    success: isSuccess ? z.literal(true) : z.literal(false),
     message: z.string(),
     responseObject: dataSchema.optional(),
-    statusCode: z.number(),
+    statusCode: z.literal(statusCode),
   });
+};
