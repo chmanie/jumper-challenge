@@ -3,6 +3,7 @@ import express, { Express } from 'express';
 import helmet from 'helmet';
 import { pino } from 'pino';
 
+import { authRouter } from '@/api/auth/authRouter';
 import { healthCheckRouter } from '@/api/healthCheck/healthCheckRouter';
 import { openAPIRouter } from '@/api-docs/openAPIRouter';
 import { addErrorToRequestLog, defaultErrorResponse, unexpectedRequest } from '@/common/middleware/errorHandler';
@@ -26,6 +27,7 @@ app.use(express.json());
 app.use(requestLogger);
 
 // API Routes
+app.use('/api/auth', authRouter);
 app.use('/api/health-check', healthCheckRouter);
 
 // Swagger UI
