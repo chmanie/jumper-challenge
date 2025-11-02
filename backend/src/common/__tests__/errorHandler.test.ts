@@ -2,7 +2,7 @@ import express, { Express } from 'express';
 import { StatusCodes } from 'http-status-codes';
 import request from 'supertest';
 
-import errorHandler from '@/common/middleware/errorHandler';
+import { addErrorToRequestLog, defaultErrorResponse, unexpectedRequest } from '@/common/middleware/errorHandler';
 
 describe('Error Handler Middleware', () => {
   let app: Express;
@@ -18,8 +18,9 @@ describe('Error Handler Middleware', () => {
       next(error);
     });
 
-    app.use(errorHandler());
-    app.use('*', (req, res) => res.status(StatusCodes.NOT_FOUND).send('Not Found'));
+    app.use(addErrorToRequestLog);
+    app.use(defaultErrorResponse);
+    app.use(unexpectedRequest);
   });
 
   describe('Handling unknown routes', () => {
