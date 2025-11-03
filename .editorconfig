@@ -7,10 +7,10 @@ trim_trailing_whitespace = true
 end_of_line = lf
 indent_style = space
 
-[*.{js,ts,tsx}]
+[*.{js,mjs,ts,tsx}]
 indent_size = 2
 
-[*.{json,rs}]
+[*.{json}]
 indent_size = 4
 
 [*.{md,markdown}]
