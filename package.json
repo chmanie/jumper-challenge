@@ -1,0 +1,12 @@
+{
+  "name": "jumper-challenge",
+  "version": "1.0.0",
+  "private": true,
+  "description": "BalancR (Jumper Challenge)",
+  "scripts": {
+    "dev": "pnpm --parallel --stream dev",
+    "dev:backend": "pnpm --filter backend dev",
+    "dev:frontend": "pnpm --filter frontend dev"
+  },
+  "license": "ISC"
+}

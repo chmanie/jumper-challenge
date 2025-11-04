@@ -12,4 +12,13 @@ classic nextjs implementation within the material ui 5 setup.
 
 expressjs 4 with some default routes and examples.
 
-## Enjoy!
+## Notes
+
+### NixOS
+
+- To run within NixOS, flake files are provided. Use `direnv` and run
+    ```bash
+    direnv allow
+    ```
+  to set up all dependencies.
+

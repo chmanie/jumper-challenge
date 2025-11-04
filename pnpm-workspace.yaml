@@ -1,0 +1,18 @@
+packages:
+  - backend
+  - frontend
+
+onlyBuiltDependencies:
+  - '@heroui/shared-utils'
+  - '@prisma/client'
+  - '@prisma/engines'
+  - '@reown/appkit'
+  - '@scarf/scarf'
+  - bufferutil
+  - es5-ext
+  - esbuild
+  - keccak
+  - prisma
+  - sharp
+  - unrs-resolver
+  - utf-8-validate

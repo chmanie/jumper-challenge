@@ -1,5 +1,5 @@
 {
-  "name": "jumper-challenge-backend",
+  "name": "backend",
   "version": "1.0.0",
   "description": "Jumper challenge backend",
   "main": "index.ts",
