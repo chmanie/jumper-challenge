@@ -12,13 +12,23 @@ import {
   optimism,
   base,
   avalanche,
-  fantom,
+  zksync,
 } from '@reown/appkit/networks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+import { AuthProvider } from '../providers/AuthProvider';
 
 const queryClient = new QueryClient();
-const networks: [AppKitNetwork, ...AppKitNetwork[]] = [mainnet, arbitrum];
+const networks: [AppKitNetwork, ...AppKitNetwork[]] = [
+  mainnet,
+  arbitrum,
+  bsc,
+  polygon,
+  optimism,
+  base,
+  avalanche,
+  zksync,
+];
 const projectId = process.env.NEXT_PUBLIC_APPKIT_PROJECT_ID;
 
 if (!projectId) {
@@ -41,7 +51,9 @@ export function Providers({ children }: { children: React.ReactNode }) {
   return (
     <HeroUIProvider>
       <WagmiProvider config={wagmiAdapter.wagmiConfig}>
-        <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+        <QueryClientProvider client={queryClient}>
+          <AuthProvider>{children}</AuthProvider>
+        </QueryClientProvider>
       </WagmiProvider>
     </HeroUIProvider>
   );

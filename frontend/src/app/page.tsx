@@ -1,6 +1,6 @@
-import { ConnectButton } from '@/components/ConnectButton';
+import { CTAButton } from '@/components/CTAButton';
 
-export default function Home() {
+const Home = () => {
   return (
     <section className="flex flex-col items-center justify-center gap-4 py-8 md:py-10">
       <div className="inline-block max-w-xl justify-center text-center">
@@ -16,8 +16,10 @@ export default function Home() {
       </div>
 
       <div className="mt-6 flex gap-3">
-        <ConnectButton />
+        <CTAButton />
       </div>
     </section>
   );
-}
+};
+
+export default Home;
