@@ -20,5 +20,7 @@ model Token {
   id         String @id
   name       String?
   symbol     String?
+  decimals   Int?
+  logo       String?
   users      User[]
 }
