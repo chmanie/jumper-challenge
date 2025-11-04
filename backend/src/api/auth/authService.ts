@@ -1,7 +1,10 @@
 import { StatusCodes } from 'http-status-codes';
 import { SiweMessage } from 'siwe';
 
-import { ResponseStatus, ServiceResponse } from '../../common/models/serviceResponse';
+import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
+import { prismaClient } from '@/common/prisma';
+import { logger } from '@/server';
+
 import { generateJWT } from './authHelpers';
 import { NonceResponse, VerifyRequest, VerifyResponse } from './authModel';
 import { NonceStore } from './NonceStore';
@@ -39,9 +42,20 @@ export class AuthService {
         return new ServiceResponse(ResponseStatus.Failed, 'Invalid or expired nonce', null, StatusCodes.UNAUTHORIZED);
       }
 
+      await prismaClient.user.upsert({
+        create: {
+          id: data.address,
+        },
+        update: {},
+        where: {
+          id: data.address,
+        },
+      });
+
       const token = await generateJWT({ address: data.address });
       return new ServiceResponse(ResponseStatus.Success, 'Message verified successfully', { token }, StatusCodes.OK);
-    } catch {
+    } catch (error) {
+      logger.error({ error, context: 'siwe-verification' }, 'SIWE signature verification failed');
       return new ServiceResponse(
         ResponseStatus.Failed,
         'Signature could not be verified',

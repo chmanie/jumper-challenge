@@ -4,6 +4,7 @@ import request from 'supertest';
 import { privateKeyToAccount } from 'viem/accounts';
 
 import { ServiceResponse } from '@/common/models/serviceResponse';
+import { clearTestDatabase } from '@/common/utils/testHelpers';
 import { app } from '@/server';
 
 import { verifyJWT } from '../authHelpers';
@@ -24,6 +25,10 @@ const getSiweMessage = (nonce: string) =>
   });
 
 describe('Auth endpoints', () => {
+  beforeEach(async () => {
+    await clearTestDatabase();
+  });
+
   it('Gets the nonce', async () => {
     const response = await request(app).get('/api/auth/nonce');
     const result: ServiceResponse<NonceResponse> = response.body;

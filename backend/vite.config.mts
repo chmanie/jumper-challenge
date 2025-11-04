@@ -8,6 +8,7 @@ export default defineConfig({
     },
     globals: true,
     restoreMocks: true,
+    setupFiles: ['./vitest.setup.mts'],
   },
   plugins: [tsconfigPaths()],
 });

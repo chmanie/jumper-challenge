@@ -1,6 +1,9 @@
 import dotenv from 'dotenv';
 import { cleanEnv, host, num, port, str, testOnly } from 'envalid';
 
+// Load environment specific env vars
+dotenv.config({ path: `.env.${process.env.NODE_ENV}` });
+// Load .env (won't override environment specific ones)
 dotenv.config();
 
 export const env = cleanEnv(process.env, {
@@ -12,4 +15,5 @@ export const env = cleanEnv(process.env, {
   COMMON_RATE_LIMIT_WINDOW_MS: num({ devDefault: testOnly(1000) }),
   JWT_SECRET: str({ devDefault: testOnly('secret') }),
   ALCHEMY_API_KEY: str(),
+  DATABASE_URL: str({ devDefault: testOnly('file:./test.db') }),
 });
