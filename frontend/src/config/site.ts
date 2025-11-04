@@ -1,0 +1,24 @@
+export type SiteConfig = typeof siteConfig;
+
+export const siteConfig = {
+  navItems: [
+    {
+      label: 'Home',
+      href: '/',
+    },
+    {
+      label: 'Balances',
+      href: '/balances',
+    },
+    {
+      label: 'Leaderboard',
+      href: '/leaderboard',
+    },
+  ],
+  navMenuItems: [
+    {
+      label: 'Logout',
+      href: '/logout',
+    },
+  ],
+};

@@ -2,6 +2,9 @@ import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
 import './globals.css';
 import { Providers } from './providers';
+import { Link } from '@heroui/link';
+import clsx from 'clsx';
+import { Navbar } from '../components/Navbar';
 
 const geistSans = Geist({
   variable: '--font-geist-sans',
@@ -24,9 +27,32 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} antialiased`}>
-        <Providers>{children}</Providers>
+    <html lang="en" className="dark">
+      <head />
+      <body
+        className={clsx(
+          'text-foreground bg-background min-h-screen antialiased',
+          geistSans.variable,
+          geistMono.variable
+        )}
+      >
+        <Providers>
+          <div className="relative flex h-screen flex-col font-sans">
+            <Navbar />
+            <main className="container mx-auto max-w-7xl grow px-6 pt-16">{children}</main>
+            <footer className="flex w-full items-center justify-center py-3">
+              <Link
+                isExternal
+                className="flex items-center gap-1 text-current"
+                href="https://heroui.com?utm_source=next-app-template"
+                title="heroui.com homepage"
+              >
+                <span className="text-default-600">Powered by</span>
+                <p className="text-primary">HeroUI</p>
+              </Link>
+            </footer>
+          </div>
+        </Providers>
       </body>
     </html>
   );

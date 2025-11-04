@@ -13,11 +13,17 @@
     "@heroui/react": "^2.8.5",
     "@heroui/system": "^2.4.23",
     "@heroui/theme": "^2.4.23",
+    "@reown/appkit": "^1.8.12",
+    "@reown/appkit-adapter-wagmi": "^1.8.12",
+    "@tanstack/react-query": "^5.90.6",
+    "clsx": "^2.1.1",
     "eslint-config-prettier": "^10.1.8",
     "framer-motion": "^12.23.24",
     "next": "16.0.1",
     "react": "19.2.0",
-    "react-dom": "19.2.0"
+    "react-dom": "19.2.0",
+    "viem": "^2.38.6",
+    "wagmi": "^2.19.2"
   },
   "devDependencies": {
     "@tailwindcss/postcss": "^4",
