@@ -1,12 +1,13 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import express, { Router } from 'express';
-import validate from 'express-zod-safe';
+import validate, { type WeakRequestHandler } from 'express-zod-safe';
 import { StatusCodes } from 'http-status-codes';
 import { z } from 'zod';
 
 import { createApiResponses } from '@/api-docs/openAPIResponseBuilders';
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
 
+import { checkAuth } from '../auth/authMiddleware';
 import { BalanceRequestSchema, BalanceResponseSchema } from './tokenBalanceModel';
 import { getTokenBalances } from './tokenBalanceService';
 
@@ -35,11 +36,16 @@ export const tokenBalanceRouter: Router = (() => {
     ]),
   });
 
-  // FIXME: auth middleware (check JWT)
-  router.get('/:chainId/:address', validate(BalanceRequestSchema), async (req, res) => {
-    const serviceResponse = await getTokenBalances(req.params);
-    handleServiceResponse(serviceResponse, res);
-  });
+  router.get(
+    '/:chainId/:address',
+    // See https://github.com/AngaBlue/express-zod-safe?tab=readme-ov-file#%EF%B8%8F-usage-with-additional-middleware
+    checkAuth as WeakRequestHandler,
+    validate(BalanceRequestSchema),
+    async (req, res) => {
+      const serviceResponse = await getTokenBalances(req.params);
+      handleServiceResponse(serviceResponse, res);
+    }
+  );
 
   return router;
 })();
