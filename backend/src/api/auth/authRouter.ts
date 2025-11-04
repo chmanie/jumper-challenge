@@ -1,10 +1,11 @@
 import { OpenAPIRegistry } from '@asteasolutions/zod-to-openapi';
 import express, { Request, Response, Router } from 'express';
+import validate from 'express-zod-safe';
 import { StatusCodes } from 'http-status-codes';
 import { z } from 'zod';
 
 import { createApiResponse, createApiResponses } from '@/api-docs/openAPIResponseBuilders';
-import { handleServiceResponse, validateRequest } from '@/common/utils/httpHandlers';
+import { handleServiceResponse } from '@/common/utils/httpHandlers';
 
 import { NonceResponseSchema, VerifyRequestSchema, VerifyResponseSchema } from './authModel';
 import { AuthService } from './authService';
@@ -37,7 +38,7 @@ export const authRouter: Router = (() => {
       body: {
         content: {
           'application/json': {
-            schema: VerifyRequestSchema.shape.body,
+            schema: VerifyRequestSchema.body,
           },
         },
         description: 'SIWE message and corresponding singature',
@@ -55,7 +56,7 @@ export const authRouter: Router = (() => {
     ]),
   });
 
-  router.post('/verify', validateRequest(VerifyRequestSchema), async (req: Request, res: Response) => {
+  router.post('/verify', validate(VerifyRequestSchema), async (req, res) => {
     const serviceResponse = await authService.verifySignature(req.body);
     handleServiceResponse(serviceResponse, res);
   });

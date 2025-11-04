@@ -1,3 +1,4 @@
+import { type ValidatedRequest } from 'express-zod-safe';
 import { z } from 'zod';
 
 export const NonceResponseSchema = z.object({
@@ -6,14 +7,14 @@ export const NonceResponseSchema = z.object({
 
 export type NonceResponse = z.infer<typeof NonceResponseSchema>;
 
-export const VerifyRequestSchema = z.object({
+export const VerifyRequestSchema = {
   body: z.object({
     message: z.string(),
     signature: z.string(),
   }),
-});
+};
 
-export type VerifyRequest = z.infer<typeof VerifyRequestSchema>;
+export type VerifyRequest = ValidatedRequest<typeof VerifyRequestSchema>;
 
 export const VerifyResponseSchema = z.object({
   token: z.string(),

@@ -1,6 +1,6 @@
-import { NextFunction, Request, Response } from 'express';
+import { Response } from 'express';
+import { setGlobalErrorHandler } from 'express-zod-safe';
 import { StatusCodes } from 'http-status-codes';
-import { ZodError, ZodSchema } from 'zod';
 
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
 
@@ -8,13 +8,12 @@ export const handleServiceResponse = (serviceResponse: ServiceResponse<any>, res
   return response.status(serviceResponse.statusCode).send(serviceResponse);
 };
 
-export const validateRequest = (schema: ZodSchema) => (req: Request, res: Response, next: NextFunction) => {
-  try {
-    schema.parse({ body: req.body, query: req.query, params: req.params });
-    next();
-  } catch (err) {
-    const errorMessage = `Invalid input: ${(err as ZodError).errors.map((e) => e.message).join(', ')}`;
-    const statusCode = StatusCodes.BAD_REQUEST;
-    res.status(statusCode).send(new ServiceResponse<null>(ResponseStatus.Failed, errorMessage, null, statusCode));
-  }
-};
+setGlobalErrorHandler((errors, req, res) => {
+  const errorMessages = errors
+    .map((e) => e.errors.issues.map((issue) => `${issue.path.join('.')}: ${issue.message}`).join('; '))
+    .join('\n');
+
+  const errorMessage = `Invalid input: ${errorMessages}`;
+  const statusCode = StatusCodes.BAD_REQUEST;
+  res.status(statusCode).send(new ServiceResponse<null>(ResponseStatus.Failed, errorMessage, null, statusCode));
+});
