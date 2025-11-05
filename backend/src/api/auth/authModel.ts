@@ -2,8 +2,6 @@ import { type ValidatedRequest } from 'express-zod-safe';
 import { Address, etherUnits } from 'viem';
 import { z } from 'zod';
 
-import { ethereumAddress } from '@/common/utils/commonValidation';
-
 export const NonceResponseSchema = z.object({
   nonce: z.string(),
 });
@@ -24,12 +22,6 @@ export const VerifyResponseSchema = z.object({
 });
 
 export type VerifyResponse = z.infer<typeof VerifyResponseSchema>;
-
-export const MeResponseSchema = z.object({
-  me: ethereumAddress,
-});
-
-export type MeResponse = z.infer<typeof MeResponseSchema>;
 
 export interface JwtPayload {
   address: Address;

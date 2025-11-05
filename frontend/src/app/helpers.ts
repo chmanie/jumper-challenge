@@ -1,12 +1,11 @@
-// FIXME: Use OpenAPI library for typing requests?
+// Just a simple API request abstraction as we only have GET and POST requests (for now)
+// In the future we could use an OpenAPI library for typing requests?
 export const makeAPIRequest = async (endpoint: string, data?: unknown) => {
-  const url = `${process.env.NEXT_PUBLIC_API_URL}${endpoint}`;
-
   let response: Response;
 
   if (data) {
     // POST request when data is provided
-    response = await fetch(url, {
+    response = await fetch(endpoint, {
       method: 'POST',
       credentials: 'include',
       headers: {
@@ -16,7 +15,7 @@ export const makeAPIRequest = async (endpoint: string, data?: unknown) => {
     });
   } else {
     // GET request when no data
-    response = await fetch(url, {
+    response = await fetch(endpoint, {
       method: 'GET',
       credentials: 'include',
     });
@@ -27,5 +26,5 @@ export const makeAPIRequest = async (endpoint: string, data?: unknown) => {
   }
 
   const result = await response.json();
-  return result.responseObject;
+  return result;
 };

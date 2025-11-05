@@ -8,10 +8,9 @@ import { logger } from '../../server';
 import { verifyJWT } from './authHelpers';
 
 export const checkAuth = async (req: Request, res: Response, next: NextFunction) => {
-  let token = req.cookies.token;
+  let token: string | undefined;
 
-  // Fallback to Authorization header if cookie is not present
-  if (!token && req.headers.authorization) {
+  if (req.headers.authorization) {
     const tokenMatch = req.headers.authorization.match(/^Bearer\s(.+)$/);
     if (tokenMatch) {
       token = tokenMatch[1];

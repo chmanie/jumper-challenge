@@ -7,7 +7,7 @@ import { prismaClient } from '@/common/prisma';
 import { logger } from '@/server';
 
 import { generateJWT } from './authHelpers';
-import { MeResponse, NonceResponse, VerifyRequest, VerifyResponse } from './authModel';
+import { NonceResponse, VerifyRequest, VerifyResponse } from './authModel';
 import { NonceStore } from './NonceStore';
 
 export class AuthService {
@@ -64,13 +64,5 @@ export class AuthService {
         StatusCodes.UNAUTHORIZED
       );
     }
-  }
-
-  public me(address: Address): ServiceResponse<MeResponse> {
-    return new ServiceResponse(ResponseStatus.Success, 'Authenticated', { me: address }, StatusCodes.OK);
-  }
-
-  public logout(): ServiceResponse<null> {
-    return new ServiceResponse(ResponseStatus.Success, 'Successfully logged out', null, StatusCodes.OK);
   }
 }

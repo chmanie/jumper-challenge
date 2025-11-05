@@ -1,18 +1,22 @@
-import { useCallback, useEffect, useRef, useState, type PropsWithChildren } from 'react';
 import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
-import { createSiweMessage } from 'viem/siwe';
+import { useCallback, useEffect, useRef, useState, type PropsWithChildren } from 'react';
 import { useRouter } from 'next/navigation';
+import { type Address } from 'viem';
+import { createSiweMessage } from 'viem/siwe';
+import { useSignMessage } from 'wagmi';
 
 import { AuthContext } from './AuthContext';
-import { useSignMessage } from 'wagmi';
 import { makeAPIRequest } from '../app/helpers';
-import { Address } from 'viem';
 
-export const AuthProvider = ({ children }: PropsWithChildren) => {
+interface Props {
+  initialIsAuthenticated: boolean;
+}
+
+export const AuthProvider = ({ children, initialIsAuthenticated }: PropsWithChildren<Props>) => {
   const { address, isConnected } = useAppKitAccount();
   const { chainId } = useAppKitNetwork();
   const { signMessageAsync } = useSignMessage();
-  const [isAuthenticated, setAuthenticated] = useState(false);
+  const [isAuthenticated, setAuthenticated] = useState(initialIsAuthenticated);
   const [isLoading, setLoading] = useState(false);
   const [error, setError] = useState<string | null>(null);
   const wasConnected = useRef(isConnected);
@@ -29,18 +33,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
         throw new Error('Wallet address or chainId missing');
       }
 
-      try {
-        const { me } = await makeAPIRequest('/auth/me');
-        if (me) {
-          setLoading(false);
-          setAuthenticated(true);
-          return;
-        }
-      } catch {
-        // If user is not authenticated, just continue with the rest of the flow
-      }
-
-      const { nonce } = await makeAPIRequest('/auth/nonce');
+      const { nonce } = await makeAPIRequest('/api/auth/nonce');
 
       const message = createSiweMessage({
         domain: window.location.host,
@@ -54,7 +47,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
 
       const signature = await signMessageAsync({ message, account: address as Address });
 
-      await makeAPIRequest('/auth/verify', {
+      await makeAPIRequest('/api/auth/login', {
         message,
         signature,
       });
@@ -72,7 +65,7 @@ export const AuthProvider = ({ children }: PropsWithChildren) => {
   useEffect(() => {
     // Only log out when user was connected before
     if (wasConnected.current) {
-      makeAPIRequest('/auth/logout', {});
+      makeAPIRequest('/api/auth/logout', {});
       setAuthenticated(false);
       setError(null);
       router.push('/');

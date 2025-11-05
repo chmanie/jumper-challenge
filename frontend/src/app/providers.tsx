@@ -2,6 +2,7 @@
 
 import { HeroUIProvider } from '@heroui/react';
 import { createAppKit } from '@reown/appkit/react';
+import { type PropsWithChildren } from 'react';
 import { WagmiProvider } from 'wagmi';
 import {
   AppKitNetwork,
@@ -16,6 +17,7 @@ import {
 } from '@reown/appkit/networks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+
 import { AuthProvider } from '../providers/AuthProvider';
 
 const queryClient = new QueryClient();
@@ -47,14 +49,18 @@ createAppKit({
   projectId,
 });
 
-export function Providers({ children }: { children: React.ReactNode }) {
+interface Props {
+  isAuthenticated: boolean;
+}
+
+export const Providers = ({ children, isAuthenticated }: PropsWithChildren<Props>) => {
   return (
     <HeroUIProvider>
       <WagmiProvider config={wagmiAdapter.wagmiConfig}>
         <QueryClientProvider client={queryClient}>
-          <AuthProvider>{children}</AuthProvider>
+          <AuthProvider initialIsAuthenticated={isAuthenticated}>{children}</AuthProvider>
         </QueryClientProvider>
       </WagmiProvider>
     </HeroUIProvider>
   );
-}
+};
