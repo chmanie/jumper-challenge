@@ -43,7 +43,7 @@ export const LeaderboardTable = () => {
   return (
     <div className="flex flex-col gap-4">
       <div className="text-center">
-        {!isEntered && !isLoading ? <LeaderboardEnterButton onSubmit={() => fetchLeaderboard()} /> : null}
+        {!isLoading ? <LeaderboardEnterButton update={!!isEntered} onSubmit={() => fetchLeaderboard()} /> : null}
       </div>
       <Table isStriped aria-label="Leaderboard table">
         <TableHeader>

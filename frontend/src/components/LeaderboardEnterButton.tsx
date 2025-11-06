@@ -9,9 +9,10 @@ import { Spinner } from '@heroui/spinner';
 
 interface Props {
   onSubmit: () => void;
+  update?: boolean;
 }
 
-export const LeaderboardEnterButton = ({ onSubmit }: Props) => {
+export const LeaderboardEnterButton = ({ onSubmit, update }: Props) => {
   const { chainId } = useAppKitNetwork();
   const [isLoading, setIsLoading] = useState(false);
 
@@ -36,6 +37,8 @@ export const LeaderboardEnterButton = ({ onSubmit }: Props) => {
           <Spinner />
           <span>Crunching the numbers...</span>
         </>
+      ) : update ? (
+        'Update your numbers'
       ) : (
         'Enter the leaderboard'
       )}

@@ -2,7 +2,7 @@ import { setTimeout } from 'node:timers/promises';
 
 import { StatusCodes } from 'http-status-codes';
 import ky, { HTTPError } from 'ky';
-import { Address } from 'viem';
+import { Address, type Hex, hexToBigInt } from 'viem';
 
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
 import { env } from '@/common/utils/envConfig';
@@ -85,7 +85,11 @@ export const enterLeaderboard = async (chainId: number, userAddress: Address): P
         })
         .json<AlchemyTokenBalanceResponse>();
 
-      tokenCount += result.tokenBalances.length;
+      const tokenBalances = result.tokenBalances
+        // Alchemy also shows historic token holdings with a zero balance
+        .filter(({ tokenBalance }) => hexToBigInt(tokenBalance as Hex) > 0n);
+
+      tokenCount += tokenBalances.length;
       pageKey = result.pageKey;
 
       if (pageKey) {
