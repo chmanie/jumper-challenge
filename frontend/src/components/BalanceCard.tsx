@@ -28,7 +28,10 @@ export const BalanceCard = ({ address, balance, decimals = 18, icon, name, symbo
           fallback={name || symbol ? undefined : '$'}
         />
         <h2 className="text-default-600 text-2xl font-semibold">
-          {displayBalance} {symbol || '???'}
+          {displayBalance}{' '}
+          <span className="inline-block max-w-40 overflow-hidden align-bottom text-ellipsis whitespace-nowrap">
+            {symbol || '???'}
+          </span>
         </h2>
       </CardHeader>
       <CardBody className="px-3 py-0">

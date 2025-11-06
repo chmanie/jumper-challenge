@@ -20,7 +20,10 @@ const BalancesPage = async () => {
             Token Balances{' '}
           </span>
           <span>on </span>
-          <span className="bg-linear-to-b from-[#5EA2EF] to-[#0072F5] bg-clip-text text-transparent">
+          <span
+            className="bg-linear-to-b from-[#5EA2EF] to-[#0072F5] bg-clip-text text-transparent"
+            suppressHydrationWarning
+          >
             <NetworkName />
           </span>
         </h1>

@@ -75,7 +75,7 @@ export const BalanceGrid = ({ address }: Props) => {
 
   if (isInitialLoading) {
     return (
-      <div className="grid grid-cols-3 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {Array.from({ length: 11 }).map((_val, idx) => (
           <BalanceSkeletonCard key={idx} />
         ))}
@@ -93,7 +93,7 @@ export const BalanceGrid = ({ address }: Props) => {
 
   return (
     <div className="space-y-4">
-      <div className="grid grid-cols-3 gap-4 lg:grid-cols-3">
+      <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
         {balances.map(({ contractAddress, tokenBalance, tokenMetadata }) => (
           <BalanceCard
             key={contractAddress}

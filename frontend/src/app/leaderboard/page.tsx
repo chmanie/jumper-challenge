@@ -17,7 +17,10 @@ const LeaderboardPage = async () => {
         <h1 className="mb-12 text-2xl font-semibold tracking-normal lg:text-4xl">
           <span className="bg-linear-to-b from-[#FF1CF7] to-[#b249f8] bg-clip-text text-transparent">Leaderboard </span>
           <span>on </span>
-          <span className="bg-linear-to-b from-[#5EA2EF] to-[#0072F5] bg-clip-text text-transparent">
+          <span
+            className="bg-linear-to-b from-[#5EA2EF] to-[#0072F5] bg-clip-text text-transparent"
+            suppressHydrationWarning
+          >
             <NetworkName />
           </span>
         </h1>
