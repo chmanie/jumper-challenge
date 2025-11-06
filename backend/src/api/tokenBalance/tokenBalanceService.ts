@@ -4,45 +4,38 @@ import { Address, Hex, hexToBigInt, isAddressEqual } from 'viem';
 
 import { ALCHEMY_NETWORKS } from '@/common/consts';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
+import { prismaClient } from '@/common/prisma';
+import { AlchemyTokenBalanceResponse, AlchemyTokenMetadataResponse } from '@/common/types';
 import { env } from '@/common/utils/envConfig';
+import { logger } from '@/server';
 
-import { prismaClient } from '../../common/prisma';
 import { BalanceRequest, BalanceResponse } from './tokenBalanceModel';
 
-type AlchemyAPIResponse<T> = {
-  jsonrpc: string;
-  id: number;
-  result: T;
-};
-
-type AlchemyTokenBalanceResponse = AlchemyAPIResponse<{
-  address: Address;
-  tokenBalances: {
-    contractAddress: Address;
-    tokenBalance: string;
-  }[];
-}>;
-
-type AlchemyTokenMetadataResponse = AlchemyAPIResponse<{
-  name: string;
-  symbol: string;
-  decimals: number;
-  logo: string;
-}>;
-
-export const getTokenBalances = async ({
-  address,
-  chainId,
-}: BalanceRequest['params']): Promise<ServiceResponse<BalanceResponse | null>> => {
+export const getTokenBalances = async (
+  chainId: BalanceRequest['params']['chainId'],
+  address: BalanceRequest['params']['address'],
+  pageKey: BalanceRequest['query']['pageKey'],
+  limit: BalanceRequest['query']['limit'] = 100
+): Promise<ServiceResponse<BalanceResponse | null>> => {
   const networkString = ALCHEMY_NETWORKS[chainId as keyof typeof ALCHEMY_NETWORKS];
 
   try {
+    const balanceParams: [Address, string, { maxCount: number; pageKey?: string }] = [
+      address,
+      'erc20',
+      { maxCount: limit },
+    ];
+
+    if (pageKey) {
+      balanceParams[2].pageKey = pageKey;
+    }
+
     const { result: balanceResult } = await ky
       .post(`https://${networkString}.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`, {
         json: {
           jsonrpc: '2.0',
           method: 'alchemy_getTokenBalances',
-          params: [address, 'erc20'],
+          params: balanceParams,
           id: 1,
         },
       })
@@ -69,7 +62,7 @@ export const getTokenBalances = async ({
     let newTokens: (typeof cachedTokens)[number][] = [];
 
     if (tokensToFetch.length > 0) {
-      // Create JSON-RPC batch requst
+      // Create JSON-RPC batch requst (https://www.jsonrpc.org/specification#batch)
       const metadataRequests = tokensToFetch.map((contractAddress, index) => ({
         jsonrpc: '2.0',
         method: 'alchemy_getTokenMetadata',
@@ -114,6 +107,7 @@ export const getTokenBalances = async ({
         tokenMetadata: allTokens.get(contractAddress),
         tokenBalance,
       })),
+      pageKey: balanceResult.pageKey,
     };
 
     return new ServiceResponse(ResponseStatus.Success, 'Balances fetched successfully', data, StatusCodes.OK);
@@ -125,6 +119,11 @@ export const getTokenBalances = async ({
         null,
         StatusCodes.BAD_GATEWAY
       );
+    } else {
+      logger.error(
+        { err: error, context: 'leaderboard' },
+        'An unexpected error occurred while fetching token balances'
+      );
     }
   }
 
@@ -134,6 +133,4 @@ export const getTokenBalances = async ({
     null,
     StatusCodes.INTERNAL_SERVER_ERROR
   );
-
-  // FIXME: Paging!!
 };

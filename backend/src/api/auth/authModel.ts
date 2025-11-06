@@ -1,5 +1,5 @@
 import { type ValidatedRequest } from 'express-zod-safe';
-import { Address, etherUnits } from 'viem';
+import { Address } from 'viem';
 import { z } from 'zod';
 
 export const NonceResponseSchema = z.object({

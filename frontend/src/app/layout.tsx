@@ -1,4 +1,3 @@
-import { Link } from '@heroui/link';
 import clsx from 'clsx';
 import type { Metadata } from 'next';
 import { Geist, Geist_Mono } from 'next/font/google';
@@ -44,18 +43,7 @@ const RootLayout = async ({
         <Providers isAuthenticated={isAuthenticated}>
           <div className="relative flex h-screen flex-col font-sans">
             <Navbar />
-            <main className="container mx-auto max-w-7xl grow px-6 pt-16">{children}</main>
-            <footer className="flex w-full items-center justify-center py-3">
-              <Link
-                isExternal
-                className="flex items-center gap-1 text-current"
-                href="https://heroui.com?utm_source=next-app-template"
-                title="heroui.com homepage"
-              >
-                <span className="text-default-600">Powered by</span>
-                <p className="text-primary">HeroUI</p>
-              </Link>
-            </footer>
+            <main className="container mx-auto max-w-7xl grow px-6 pt-16 pb-10">{children}</main>
           </div>
         </Providers>
       </body>

@@ -4,10 +4,10 @@ import validate, { type WeakRequestHandler } from 'express-zod-safe';
 import { StatusCodes } from 'http-status-codes';
 import { z } from 'zod';
 
+import { checkAuth } from '@/api/auth/authMiddleware';
 import { createApiResponses } from '@/api-docs/openAPIResponseBuilders';
 import { handleServiceResponse } from '@/common/utils/httpHandlers';
 
-import { checkAuth } from '../auth/authMiddleware';
 import { BalanceRequestSchema, BalanceResponseSchema } from './tokenBalanceModel';
 import { getTokenBalances } from './tokenBalanceService';
 
@@ -23,6 +23,7 @@ export const tokenBalanceRouter: Router = (() => {
     summary: 'Get balances for user on a supported chain',
     request: {
       params: BalanceRequestSchema.params,
+      query: BalanceRequestSchema.query,
     },
     responses: createApiResponses([
       { schema: BalanceResponseSchema, description: 'Token balances fetched successfully', statusCode: StatusCodes.OK },
@@ -42,7 +43,12 @@ export const tokenBalanceRouter: Router = (() => {
     checkAuth as WeakRequestHandler,
     validate(BalanceRequestSchema),
     async (req, res) => {
-      const serviceResponse = await getTokenBalances(req.params);
+      const serviceResponse = await getTokenBalances(
+        req.params.chainId,
+        req.params.address,
+        req.query.pageKey,
+        req.query.limit
+      );
       handleServiceResponse(serviceResponse, res);
     }
   );

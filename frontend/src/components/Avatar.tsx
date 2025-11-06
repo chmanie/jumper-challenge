@@ -13,7 +13,8 @@ export const Avatar = () => {
 
   return (
     <HerouiAvatar
-      className={clsx({ 'cursor-pointer': isConnected })}
+      isBordered={isConnected}
+      className={clsx('ring-[#FF1CF7]', { 'cursor-pointer': isConnected })}
       onClick={isConnected ? () => open() : undefined}
       src={address ? blo(address as Address) : undefined}
     />

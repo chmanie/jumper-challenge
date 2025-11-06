@@ -8,6 +8,10 @@ export const BalanceRequestSchema = {
     address: ethereumAddress,
     chainId: supportedChain,
   }),
+  query: z.object({
+    limit: z.coerce.number().optional(),
+    pageKey: z.string().optional(),
+  }),
 };
 
 export type BalanceRequest = ValidatedRequest<typeof BalanceRequestSchema>;
