@@ -7,6 +7,7 @@ import { type Address } from 'viem';
 
 import { getBalances } from '@/app/balances/actions';
 import type { BalanceResponse } from '@/lib/types';
+import { parseChainId } from '@/lib/utils';
 
 import { BalanceCard, BalanceSkeletonCard } from './BalanceCard';
 import { InfoCard } from './InfoCard';
@@ -27,18 +28,13 @@ export const BalanceGrid = ({ address }: Props) => {
 
   const fetchBalances = useCallback(
     async (page?: string) => {
-      if (!chainId) {
-        setInitialLoading(false);
-        setError('Please connect to a network using the wallet.');
-        return;
-      }
-
       // Prevent duplicate fetches
       if (isFetchingRef.current) return;
       isFetchingRef.current = true;
 
       try {
-        const response = await getBalances(typeof chainId == 'number' ? chainId : parseInt(chainId, 10), address, {
+        const cId = parseChainId(chainId);
+        const response = await getBalances(cId, address, {
           page,
           limit: 30,
         });

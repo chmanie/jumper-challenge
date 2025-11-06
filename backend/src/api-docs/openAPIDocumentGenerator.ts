@@ -4,8 +4,10 @@ import { authRegistry } from '@/api/auth/authRouter';
 import { healthCheckRegistry } from '@/api/healthCheck/healthCheckRouter';
 import { tokenBalanceRegistry } from '@/api/tokenBalance/tokenBalanceRouter';
 
+import { leaderboardRegistry } from '../api/leaderboard/leaderboardRouter';
+
 export function generateOpenAPIDocument() {
-  const registry = new OpenAPIRegistry([authRegistry, tokenBalanceRegistry, healthCheckRegistry]);
+  const registry = new OpenAPIRegistry([authRegistry, healthCheckRegistry, leaderboardRegistry, tokenBalanceRegistry]);
   const generator = new OpenApiGeneratorV3(registry.definitions);
 
   return generator.generateDocument({

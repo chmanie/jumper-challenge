@@ -23,3 +23,14 @@ export interface BalanceResponse {
   }[];
   pageKey?: string;
 }
+
+export interface LeaderboardResponse {
+  entries: {
+    chainId: number;
+    id: string;
+    userId: string;
+    tokenCount: number;
+  }[];
+  pageKey?: string;
+  totalCount: number;
+}

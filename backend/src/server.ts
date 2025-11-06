@@ -5,6 +5,7 @@ import { pino } from 'pino';
 
 import { authRouter } from '@/api/auth/authRouter';
 import { healthCheckRouter } from '@/api/healthCheck/healthCheckRouter';
+import { leaderboardRouter } from '@/api/leaderboard/leaderboardRouter';
 import { tokenBalanceRouter } from '@/api/tokenBalance/tokenBalanceRouter';
 import { openAPIRouter } from '@/api-docs/openAPIRouter';
 import { addErrorToRequestLog, defaultErrorResponse, unexpectedRequest } from '@/common/middleware/errorHandler';
@@ -30,6 +31,7 @@ app.use(requestLogger);
 // API Routes
 app.use('/api/auth', authRouter);
 app.use('/api/health-check', healthCheckRouter);
+app.use('/api/leaderboard', leaderboardRouter);
 app.use('/api/balances', tokenBalanceRouter);
 
 // Swagger UI
