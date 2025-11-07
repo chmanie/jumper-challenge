@@ -1,4 +1,4 @@
-import { generateNonce } from 'siwe';
+import { generateSiweNonce } from 'viem/siwe';
 
 // In-memory storage for nonces. In production, we should use redis for better performance,
 // data retention and automatic expiration
@@ -11,7 +11,7 @@ export class NonceStore {
   }
 
   public createNonce() {
-    const nonce = generateNonce();
+    const nonce = generateSiweNonce();
     this.nonces.set(nonce, Date.now());
     return nonce;
   }

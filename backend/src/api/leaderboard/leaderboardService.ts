@@ -4,13 +4,13 @@ import { StatusCodes } from 'http-status-codes';
 import ky, { HTTPError } from 'ky';
 import { Address, type Hex, hexToBigInt } from 'viem';
 
+import { SUPPORTED_NETWORKS } from '@/common/consts';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
+import { prismaClient } from '@/common/prisma';
+import { AlchemyTokenBalanceResponse } from '@/common/types';
 import { env } from '@/common/utils/envConfig';
+import { logger } from '@/server';
 
-import { ALCHEMY_NETWORKS } from '../../common/consts';
-import { prismaClient } from '../../common/prisma';
-import { AlchemyTokenBalanceResponse } from '../../common/types';
-import { logger } from '../../server';
 import { GetLeaderboardRequest, GetLeaderboardResponse } from './leaderboardModel';
 
 export const getLeaderboard = async (
@@ -62,7 +62,8 @@ export const getLeaderboard = async (
 };
 
 export const enterLeaderboard = async (chainId: number, userAddress: Address): Promise<ServiceResponse<null>> => {
-  const networkString = ALCHEMY_NETWORKS[chainId as keyof typeof ALCHEMY_NETWORKS];
+  // chainId is already validated
+  const alchemyEndpoint = SUPPORTED_NETWORKS[chainId as keyof typeof SUPPORTED_NETWORKS].ALCHEMY_ENDPOINT;
 
   try {
     let pageKey;
@@ -75,7 +76,7 @@ export const enterLeaderboard = async (chainId: number, userAddress: Address): P
       }
 
       const { result } = await ky
-        .post(`https://${networkString}.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`, {
+        .post(`https://${alchemyEndpoint}.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`, {
           json: {
             jsonrpc: '2.0',
             method: 'alchemy_getTokenBalances',

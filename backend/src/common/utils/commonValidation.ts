@@ -5,7 +5,7 @@ import { z } from 'zod';
 // Needs to be called for request param generation to work
 extendZodWithOpenApi(z);
 
-import { ALCHEMY_NETWORKS } from '../consts';
+import { SUPPORTED_NETWORKS } from '../consts';
 
 export const ethereumAddress = z
   .string()
@@ -13,5 +13,5 @@ export const ethereumAddress = z
   .describe('Valid Ethereum address');
 export const supportedChain = z.coerce
   .number()
-  .refine((val) => Object.hasOwn(ALCHEMY_NETWORKS, val), 'Unsupported chain ID')
-  .describe(`Needs to be a supported chain id (one of ${Object.keys(ALCHEMY_NETWORKS).join(',')})`);
+  .refine((val) => Object.hasOwn(SUPPORTED_NETWORKS, val), 'Unsupported chain ID')
+  .describe(`Needs to be a supported chain id (one of ${Object.keys(SUPPORTED_NETWORKS).join(',')})`);

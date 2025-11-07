@@ -52,7 +52,7 @@ export const authRouter: Router = (() => {
         description: 'Signature verification or nonce error',
         statusCode: StatusCodes.UNAUTHORIZED,
       },
-      { schema: z.null(), description: 'Invalid SIWE message format', statusCode: StatusCodes.UNPROCESSABLE_ENTITY },
+      { schema: z.null(), description: 'Invalid SIWE message format or unsupported chain', statusCode: StatusCodes.UNPROCESSABLE_ENTITY },
     ]),
   });
 

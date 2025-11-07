@@ -2,7 +2,7 @@ import { StatusCodes } from 'http-status-codes';
 import ky, { HTTPError } from 'ky';
 import { Address, Hex, hexToBigInt, isAddressEqual } from 'viem';
 
-import { ALCHEMY_NETWORKS } from '@/common/consts';
+import { SUPPORTED_NETWORKS } from '@/common/consts';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
 import { prismaClient } from '@/common/prisma';
 import { AlchemyTokenBalanceResponse, AlchemyTokenMetadataResponse } from '@/common/types';
@@ -17,7 +17,8 @@ export const getTokenBalances = async (
   pageKey: BalanceRequest['query']['pageKey'],
   limit: BalanceRequest['query']['limit'] = 100
 ): Promise<ServiceResponse<BalanceResponse | null>> => {
-  const networkString = ALCHEMY_NETWORKS[chainId as keyof typeof ALCHEMY_NETWORKS];
+  // chainId is already validated
+  const alchemyEndpoint = SUPPORTED_NETWORKS[chainId as keyof typeof SUPPORTED_NETWORKS].ALCHEMY_ENDPOINT;
 
   try {
     const balanceParams: [Address, string, { maxCount: number; pageKey?: string }] = [
@@ -31,7 +32,7 @@ export const getTokenBalances = async (
     }
 
     const { result: balanceResult } = await ky
-      .post(`https://${networkString}.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`, {
+      .post(`https://${alchemyEndpoint}.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`, {
         json: {
           jsonrpc: '2.0',
           method: 'alchemy_getTokenBalances',
@@ -71,7 +72,7 @@ export const getTokenBalances = async (
       }));
 
       const fetchedTokenResults = await ky
-        .post(`https://${networkString}.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`, {
+        .post(`https://${alchemyEndpoint}.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`, {
           json: metadataRequests,
         })
         .json<AlchemyTokenMetadataResponse[]>();
