@@ -1,4 +1,5 @@
-import { useAppKitAccount, useAppKitNetwork } from '@reown/appkit/react';
+import { addToast } from '@heroui/react';
+import { useAppKitAccount, useAppKitNetwork, useDisconnect } from '@reown/appkit/react';
 import { useCallback, useEffect, useRef, useState, type PropsWithChildren } from 'react';
 import { useRouter } from 'next/navigation';
 import { type Address } from 'viem';
@@ -14,6 +15,7 @@ interface Props {
 
 export const AuthProvider = ({ children, initialIsAuthenticated }: PropsWithChildren<Props>) => {
   const { address, isConnected } = useAppKitAccount();
+  const { disconnect } = useDisconnect();
   const { chainId } = useAppKitNetwork();
   const { signMessageAsync } = useSignMessage();
   const [isAuthenticated, setAuthenticated] = useState(initialIsAuthenticated);
@@ -21,8 +23,6 @@ export const AuthProvider = ({ children, initialIsAuthenticated }: PropsWithChil
   const [error, setError] = useState<string | null>(null);
   const wasConnected = useRef(isConnected);
   const router = useRouter();
-
-  // FIXME: Error handling. Maybe just reset state and use toast errors
 
   const signIn = useCallback(async () => {
     setError(null);
@@ -56,10 +56,16 @@ export const AuthProvider = ({ children, initialIsAuthenticated }: PropsWithChil
     } catch (err) {
       console.error(err);
       setError('Error while trying to sign in');
+      addToast({
+        title: 'Could not sign you in',
+        description: 'Please try again later',
+        color: 'danger',
+      });
+      disconnect();
     } finally {
       setLoading(false);
     }
-  }, [address, chainId, signMessageAsync]);
+  }, [address, chainId, signMessageAsync, disconnect]);
 
   // Log out when user changes address or disconnects the wallet
   useEffect(() => {

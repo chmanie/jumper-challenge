@@ -19,6 +19,7 @@
     "@heroui/system": "^2.4.23",
     "@heroui/table": "^2.2.27",
     "@heroui/theme": "^2.4.23",
+    "@heroui/toast": "^2.0.17",
     "@reown/appkit": "^1.8.12",
     "@reown/appkit-adapter-wagmi": "^1.8.12",
     "@tanstack/react-query": "^5.90.6",

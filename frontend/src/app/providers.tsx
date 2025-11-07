@@ -17,6 +17,7 @@ import {
 } from '@reown/appkit/networks';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { WagmiAdapter } from '@reown/appkit-adapter-wagmi';
+import { ToastProvider } from '@heroui/toast';
 
 import { AuthProvider } from '../providers/AuthProvider';
 
@@ -56,6 +57,7 @@ interface Props {
 export const Providers = ({ children, isAuthenticated }: PropsWithChildren<Props>) => {
   return (
     <HeroUIProvider>
+      <ToastProvider placement="top-center" toastOffset={60} />
       <WagmiProvider config={wagmiAdapter.wagmiConfig}>
         <QueryClientProvider client={queryClient}>
           <AuthProvider initialIsAuthenticated={isAuthenticated}>{children}</AuthProvider>
