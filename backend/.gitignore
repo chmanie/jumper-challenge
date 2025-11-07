@@ -1,6 +1,9 @@
 # prisma generated client
 /generated/prisma
 
+# built javascript files
+/dist
+
 # database files
 *.db
 *.db-journal
