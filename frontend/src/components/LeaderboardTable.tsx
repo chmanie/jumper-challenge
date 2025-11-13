@@ -38,6 +38,8 @@ export const LeaderboardTable = () => {
     return null;
   }
 
+  // FIXME: Could use tanstack/react-query here
+
   const isEntered = entries && entries.find(({ userId }) => isAddressEqual(userId as Address, address as Address));
 
   return (

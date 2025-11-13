@@ -47,6 +47,21 @@ export class AuthService {
     }
 
     try {
+      // Moved before client creation
+      if (!siweMessage.nonce || !this.nonceStore.validateNonce(siweMessage.nonce)) {
+        return new ServiceResponse(ResponseStatus.Failed, 'Invalid or expired nonce', null, StatusCodes.UNAUTHORIZED);
+      }
+
+      // Moved before client creation
+      if (!siweMessage.address) {
+        return new ServiceResponse(
+          ResponseStatus.Failed,
+          'No address found in SIWE message',
+          null,
+          StatusCodes.UNAUTHORIZED
+        );
+      }
+
       const publicClient = createPublicClient({
         chain: SUPPORTED_NETWORKS[siweMessage.chainId].VIEM_CHAIN,
         transport: http(),
@@ -57,19 +72,6 @@ export class AuthService {
         return new ServiceResponse(
           ResponseStatus.Failed,
           'Signature could not be verified',
-          null,
-          StatusCodes.UNAUTHORIZED
-        );
-      }
-
-      if (!siweMessage.nonce || !this.nonceStore.validateNonce(siweMessage.nonce)) {
-        return new ServiceResponse(ResponseStatus.Failed, 'Invalid or expired nonce', null, StatusCodes.UNAUTHORIZED);
-      }
-
-      if (!siweMessage.address) {
-        return new ServiceResponse(
-          ResponseStatus.Failed,
-          'No address found in SIWE message',
           null,
           StatusCodes.UNAUTHORIZED
         );

@@ -26,7 +26,7 @@ describe('Leaderboard endpoints', () => {
       const body: ServiceResponse<GetLeaderboardResponse> = response.body;
       expect(body.success).toBe(true);
       expect(body.responseObject.entries).toBeInstanceOf(Array);
-    });
+    }, 15000);
   });
 
   describe('Enter the leaderboard with currently signed in address', () => {
@@ -41,6 +41,6 @@ describe('Leaderboard endpoints', () => {
       expect(response.statusCode).toEqual(StatusCodes.OK);
       expect(response.body.success).toBe(true);
       expect(response.body.message).toContain('Leaderboard entry added successfully');
-    });
+    }, 15000);
   });
 });

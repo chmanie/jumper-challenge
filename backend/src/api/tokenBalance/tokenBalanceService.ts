@@ -126,6 +126,7 @@ export const getTokenBalances = async (
         'An unexpected error occurred while fetching token balances'
       );
     }
+    console.log(error);
   }
 
   return new ServiceResponse(

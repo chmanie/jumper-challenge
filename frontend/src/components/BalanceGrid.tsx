@@ -26,6 +26,8 @@ export const BalanceGrid = ({ address }: Props) => {
   const [isLoadingMore, setLoadingMore] = useState(false);
   const isFetchingRef = useRef(false);
 
+  // FIXME: Could use tanstack/react-query here
+
   const fetchBalances = useCallback(
     async (page?: string) => {
       // Prevent duplicate fetches

@@ -12,24 +12,44 @@ datasource db {
 }
 
 model User {
-  id                    String  @id
+  address               String  @id // Rename to address
   leaderboardEntries    LeaderboardEntry[]
 }
 
 model Token {
-  id                    String  @id
+  address               String // Not single id anymore, rename to address
+  chainId               Int
   name                  String?
   symbol                String?
   decimals              Int?
   logo                  String?
+  tokenBalances         TokenBalance[]
+
+  @@id([chainId, address]) // To not have duplication (combination as primary key)
+  @@index([chainId])
+}
+
+// Add TokenBalance model
+model TokenBalance {
+    id                  Int     @id @default(autoincrement())
+    chainId             Int
+    tokenAddress        String
+    token               Token   @relation(fields: [chainId, tokenAddress], references: [chainId, address])
+    userAddress         String
+    balance             BigInt
+    updatedAt           DateTime @updatedAt
+
+    @@unique([chainId, tokenAddress, userAddress])
+    @@index([chainId])
+    @@index([userAddress])
 }
 
 model LeaderboardEntry {
-    id                  String  @id @default(nanoid())
+    id                  Int     @id @default(autoincrement()) // Use Int and autoincrement
     chainId             Int
     userId              String
-    user                User    @relation(fields: [userId], references: [id])
-    tokenCount          Int
+    user                User    @relation(fields: [userId], references: [address])
+    tokenCount          Int     @default(0) // Add default value
 
     @@unique([userId, chainId])
 }

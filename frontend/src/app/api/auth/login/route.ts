@@ -2,6 +2,7 @@ import { cookies } from 'next/headers';
 import { NextResponse } from 'next/server';
 import { decodeJwt } from 'jose';
 
+// FIXME: Could also use a server action instead (be consistent)
 export const POST = async (request: Request) => {
   const body = await request.json();
 

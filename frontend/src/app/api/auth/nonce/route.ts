@@ -1,5 +1,6 @@
 import { NextResponse } from 'next/server';
 
+// FIXME: Could also use a server action instead (be consistent)
 export const GET = async () => {
   // In proper BFF fashion we also proxy the nonce route
   const res = await fetch(`${process.env.API_URL}/auth/nonce`, {

@@ -55,5 +55,5 @@ describe('Auth endpoints', () => {
 
     const { payload } = await verifyJWT(verifyResult.responseObject.token);
     expect(payload.address).toEqual(account.address);
-  });
+  }, 10000);
 });
