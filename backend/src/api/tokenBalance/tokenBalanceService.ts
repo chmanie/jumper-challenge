@@ -4,7 +4,7 @@ import { Address, Hex, hexToBigInt, isAddressEqual } from 'viem';
 
 import { SUPPORTED_NETWORKS } from '@/common/consts';
 import { ResponseStatus, ServiceResponse } from '@/common/models/serviceResponse';
-import { prismaClient } from '@/common/prisma';
+import { prismaClient, redis } from '@/common/prisma';
 import { AlchemyTokenBalanceResponse, AlchemyTokenMetadataResponse } from '@/common/types';
 import { env } from '@/common/utils/envConfig';
 import { logger } from '@/server';
@@ -31,16 +31,31 @@ export const getTokenBalances = async (
       balanceParams[2].pageKey = pageKey;
     }
 
-    const { result: balanceResult } = await ky
-      .post(`https://${alchemyEndpoint}.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`, {
-        json: {
-          jsonrpc: '2.0',
-          method: 'alchemy_getTokenBalances',
-          params: balanceParams,
-          id: 1,
-        },
-      })
-      .json<AlchemyTokenBalanceResponse>();
+    const cacheKey = `tokenBalances:${chainId}:${address}`;
+
+    const cached = await redis.get(cacheKey);
+
+    let balanceResult: AlchemyTokenBalanceResponse['result'];
+
+    // FIXME: We would probably cache the full set and then paginate in memory
+
+    if (cached) {
+      balanceResult = JSON.parse(cached);
+    } else {
+      const { result } = await ky
+        .post(`https://${alchemyEndpoint}.g.alchemy.com/v2/${env.ALCHEMY_API_KEY}`, {
+          json: {
+            jsonrpc: '2.0',
+            method: 'alchemy_getTokenBalances',
+            params: balanceParams,
+            id: 1,
+          },
+        })
+        .json<AlchemyTokenBalanceResponse>();
+
+      balanceResult = result;
+      await redis.setex(cacheKey, 300, JSON.stringify(balanceResult));
+    }
 
     const tokenBalances = balanceResult.tokenBalances
       // Alchemy also shows historic token holdings with a zero balance

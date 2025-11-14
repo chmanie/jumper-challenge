@@ -16,4 +16,5 @@ export const env = cleanEnv(process.env, {
   JWT_SECRET: str({ devDefault: testOnly('secret') }),
   ALCHEMY_API_KEY: str(),
   DATABASE_URL: str({ devDefault: testOnly('file:./test.db') }),
+  REDIS_URL: str(),
 });
